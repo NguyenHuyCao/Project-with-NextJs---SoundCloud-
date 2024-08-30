@@ -12,7 +12,7 @@ const AppFooter = () => {
 
   if (!hasMounted) return <></>;
 
-  console.log("backend", process.env.NEXT_PUBLIC_BACKEND_URL);
+  // console.log("backend", process.env.NEXT_PUBLIC_BACKEND_URL);
 
   return (
     <div>
