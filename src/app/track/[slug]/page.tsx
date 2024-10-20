@@ -10,7 +10,6 @@ const DetailTrackPage = ({ params }: { params: { slug: string } }) => {
 
   return (
     <Container>
-      detailtrack
       <WaveTrack />
     </Container>
   );
