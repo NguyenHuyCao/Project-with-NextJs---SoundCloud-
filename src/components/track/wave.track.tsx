@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
+import { WaveSurferOptions } from "wavesurfer.js";
 import { useWavesurfer } from "@/utils/customHook";
 
 const WaveTrack = () => {
@@ -9,10 +10,11 @@ const WaveTrack = () => {
   const fileName = searchParams.get("audio");
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const optionsMemo = useMemo(() => {
+  const optionsMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
     return {
       waveColor: "rgb(200, 0, 200)",
       progressColor: "rgb(100, 0, 100)",
+      barWidth: 2,
       url: `/api?audio=${fileName}`,
     };
   }, []);
