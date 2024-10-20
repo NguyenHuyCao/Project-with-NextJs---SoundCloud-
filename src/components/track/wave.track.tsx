@@ -1,22 +1,54 @@
 "use client";
-import WaveSurfer from "wavesurfer.js";
-import { useEffect, useRef } from "react";
+
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
+import { useWavesurfer } from "@/utils/customHook";
 
 const WaveTrack = () => {
+  const searchParams = useSearchParams();
+  const fileName = searchParams.get("audio");
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (containerRef.current) {
-      WaveSurfer.create({
-        container: containerRef.current,
-        waveColor: "rgb(200, 0, 200)",
-        progressColor: "rgb(100, 0, 100)",
-        url: "/audio/hoidanit.mp3",
-      });
-    }
+  const optionsMemo = useMemo(() => {
+    return {
+      waveColor: "rgb(200, 0, 200)",
+      progressColor: "rgb(100, 0, 100)",
+      url: `/api?audio=${fileName}`,
+    };
   }, []);
 
-  return <div ref={containerRef}>wave track</div>;
+  const wavesurfer = useWavesurfer(containerRef, optionsMemo);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!wavesurfer) return;
+
+    setIsPlaying(false);
+
+    const subcriptions = [
+      wavesurfer.on("play", () => setIsPlaying(true)),
+      wavesurfer.on("pause", () => setIsPlaying(false)),
+    ];
+
+    return () => {
+      subcriptions.forEach((unsub) => unsub());
+    };
+  }, [wavesurfer]);
+
+  const onPlayClick = useCallback(() => {
+    if (wavesurfer) {
+      wavesurfer.isPlaying() ? wavesurfer.pause() : wavesurfer.play();
+    }
+  }, [wavesurfer]);
+
+  return (
+    <div>
+      <div ref={containerRef}>wave track</div>
+      <button onClick={onPlayClick}>
+        {isPlaying === true ? "Pause" : "Play"}
+      </button>
+    </div>
+  );
 };
 
 export default WaveTrack;
