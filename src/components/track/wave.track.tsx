@@ -8,6 +8,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import "./wave.scss";
 import { relative } from "path";
+import { Tooltip } from "@mui/material";
 
 const WaveTrack = () => {
   const searchParams = useSearchParams();
@@ -243,20 +244,26 @@ const WaveTrack = () => {
             <div className="comments" style={{ position: "relative" }}>
               {arrComments.map((item) => {
                 return (
-                  <img
-                    key={item.id}
-                    className={"" + item.id}
-                    style={{
-                      height: 20,
-                      width: 20,
-                      position: "absolute",
-                      zIndex: 20,
-                      top: 71,
-                      left: calLeft(item.moment),
-                    }}
-                    src="http://localhost:8000/images/chill1.png"
-                    alt=""
-                  />
+                  <Tooltip title={item.content} arrow={true}>
+                    <img
+                      onPointerMove={(e) => {
+                        const hover = hoverRef.current!;
+                        hover.style.width = calLeft(item.moment);
+                      }}
+                      key={item.id}
+                      className={"" + item.id}
+                      style={{
+                        height: 20,
+                        width: 20,
+                        position: "absolute",
+                        zIndex: 20,
+                        top: 71,
+                        left: calLeft(item.moment),
+                      }}
+                      src="http://localhost:8000/images/chill1.png"
+                      alt=""
+                    />
+                  </Tooltip>
                 );
               })}
             </div>
