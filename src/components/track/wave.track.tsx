@@ -10,44 +10,55 @@ const WaveTrack = () => {
   const searchParams = useSearchParams();
   const fileName = searchParams.get("audio");
   const containerRef = useRef<HTMLDivElement>(null);
+  const hoveRef = useRef<HTMLDivElement>(null);
+  const [time, setTime] = useState<string>("0:00");
+  const [duration, setDuration] = useState<string>("0:00");
 
   const optionsMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
-    // Define the waveform gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 1);
-    gradient.addColorStop(0, "#656666"); // Top color
-    gradient.addColorStop((canvas.height * 0.7) / canvas.height, "#656666"); // Top color
-    gradient.addColorStop((canvas.height * 0.7 + 1) / canvas.height, "#ffffff"); // White line
-    gradient.addColorStop((canvas.height * 0.7 + 2) / canvas.height, "#ffffff"); // White line
-    gradient.addColorStop((canvas.height * 0.7 + 3) / canvas.height, "#B1B1B1"); // Bottom color
-    gradient.addColorStop(1, "#B1B1B1"); // Bottom color
+    let gradient, progressGradient;
+    if (typeof window !== "undefined") {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d")!;
 
-    // Define the progress gradient
-    const progressGradient = ctx.createLinearGradient(
-      0,
-      0,
-      0,
-      canvas.height * 1
-    );
-    progressGradient.addColorStop(0, "#EE772F"); // Top color
-    progressGradient.addColorStop(
-      (canvas.height * 0.7) / canvas.height,
-      "#EB4926"
-    ); // Top color
-    progressGradient.addColorStop(
-      (canvas.height * 0.7 + 1) / canvas.height,
-      "#ffffff"
-    ); // White line
-    progressGradient.addColorStop(
-      (canvas.height * 0.7 + 2) / canvas.height,
-      "#ffffff"
-    ); // White line
-    progressGradient.addColorStop(
-      (canvas.height * 0.7 + 3) / canvas.height,
-      "#F6B094"
-    ); // Bottom color
-    progressGradient.addColorStop(1, "#F6B094"); // Bottom color
+      // Define the waveform gradient
+      gradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 1);
+      gradient.addColorStop(0, "#656666"); // Top color
+      gradient.addColorStop((canvas.height * 0.7) / canvas.height, "#656666"); // Top color
+      gradient.addColorStop(
+        (canvas.height * 0.7 + 1) / canvas.height,
+        "#ffffff"
+      ); // White line
+      gradient.addColorStop(
+        (canvas.height * 0.7 + 2) / canvas.height,
+        "#ffffff"
+      ); // White line
+      gradient.addColorStop(
+        (canvas.height * 0.7 + 3) / canvas.height,
+        "#B1B1B1"
+      ); // Bottom color
+      gradient.addColorStop(1, "#B1B1B1"); // Bottom color
+
+      // Define the progress gradient
+      progressGradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 1);
+      progressGradient.addColorStop(0, "#EE772F"); // Top color
+      progressGradient.addColorStop(
+        (canvas.height * 0.7) / canvas.height,
+        "#EB4926"
+      ); // Top color
+      progressGradient.addColorStop(
+        (canvas.height * 0.7 + 1) / canvas.height,
+        "#ffffff"
+      ); // White line
+      progressGradient.addColorStop(
+        (canvas.height * 0.7 + 2) / canvas.height,
+        "#ffffff"
+      ); // White line
+      progressGradient.addColorStop(
+        (canvas.height * 0.7 + 3) / canvas.height,
+        "#F6B094"
+      ); // Bottom color
+      progressGradient.addColorStop(1, "#F6B094"); // Bottom color
+    }
     return {
       waveColor: gradient,
       progressColor: progressGradient,
@@ -63,12 +74,9 @@ const WaveTrack = () => {
   useEffect(() => {
     if (!wavesurfer) return;
     setIsPlaying(false);
-    const timeEl = document.querySelector("#time")!;
-    const durationEl = document.querySelector("#duration")!;
 
-    const hover = document.querySelector("#hover")!;
+    const hover = hoveRef.current!;
     const waveform = containerRef.current!;
-    //@ts-ignore
     waveform.addEventListener(
       "pointermove",
       (e) => (hover.style.width = `${e.offsetX}px`)
@@ -77,14 +85,12 @@ const WaveTrack = () => {
     const subcriptions = [
       wavesurfer.on("play", () => setIsPlaying(true)),
       wavesurfer.on("pause", () => setIsPlaying(false)),
-      wavesurfer.on(
-        "decode",
-        (duration) => (durationEl.textContent = formatTime(duration))
-      ),
-      wavesurfer.on(
-        "timeupdate",
-        (currentTime) => (timeEl.textContent = formatTime(currentTime))
-      ),
+      wavesurfer.on("decode", (duration) => {
+        setDuration(formatTime(duration));
+      }),
+      wavesurfer.on("timeupdate", (currentTime) => {
+        setTime(formatTime(currentTime));
+      }),
     ];
 
     return () => {
@@ -108,9 +114,9 @@ const WaveTrack = () => {
   return (
     <div style={{ marginTop: 100 }}>
       <div ref={containerRef} className="wave-form-container">
-        <div id="time">0:00</div>
-        <div id="duration">0:00</div>
-        <div id="hover"></div>
+        <div className="time">{time}</div>
+        <div className="duration">{duration}</div>
+        <div className="hover-wave" ref={hoveRef}></div>
       </div>
       <button onClick={onPlayClick}>
         {isPlaying === true ? "Pause" : "Play"}
