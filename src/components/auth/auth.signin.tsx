@@ -18,6 +18,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const AuthSignIn = (prop: any) => {
   const router = useRouter();
@@ -30,6 +32,9 @@ const AuthSignIn = (prop: any) => {
 
   const [isErrorUsername, setIsErrorUsername] = useState<boolean>(false);
   const [isErrorPassword, setIsErrorPassword] = useState<boolean>(false);
+
+  const [openMessage, setOpenMessage] = useState<boolean>(false);
+  const [resMessage, setResMessage] = useState<string>("");
 
   const handleSubmit = async () => {
     setIsErrorPassword(false);
@@ -56,7 +61,8 @@ const AuthSignIn = (prop: any) => {
     if (!res?.error) {
       router.push("/");
     } else {
-      alert(res.error);
+      setOpenMessage(true);
+      setResMessage(res.error);
     }
   };
 
@@ -115,12 +121,17 @@ const AuthSignIn = (prop: any) => {
               helperText={errorUsername}
             />
             <TextField
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmit();
+                }
+              }}
+              onChange={(event) => setPassword(event.target.value)}
               label="Password"
               variant="outlined"
-              onChange={(event) => setPassword(event.target.value)}
               margin="normal"
-              required
               name="password"
+              required
               fullWidth
               type={showPassword ? "text" : "password"}
               error={isErrorPassword}
@@ -179,6 +190,20 @@ const AuthSignIn = (prop: any) => {
           </div>
         </Grid>
       </Grid>
+      <Snackbar
+        open={openMessage}
+        // autoHideDuration={2}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setOpenMessage(false)}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {resMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
