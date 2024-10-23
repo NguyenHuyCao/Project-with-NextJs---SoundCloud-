@@ -14,6 +14,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
+import { signIn } from "next-auth/react";
 
 const AuthSignIn = (prop: any) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -91,6 +92,7 @@ const AuthSignIn = (prop: any) => {
               required
               fullWidth
               autoFocus
+              margin="normal"
               error={isErrorUsername}
               helperText={errorUsername}
             />
@@ -143,6 +145,7 @@ const AuthSignIn = (prop: any) => {
                   cursor: "pointer",
                   bgcolor: "orange",
                 }}
+                onClick={() => signIn("github")}
               >
                 <GitHubIcon titleAccess="Login with Github" />
               </Avatar>
