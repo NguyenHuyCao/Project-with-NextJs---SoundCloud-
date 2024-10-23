@@ -14,9 +14,13 @@ import LockIcon from "@mui/icons-material/Lock";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const AuthSignIn = (prop: any) => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -27,7 +31,7 @@ const AuthSignIn = (prop: any) => {
   const [isErrorUsername, setIsErrorUsername] = useState<boolean>(false);
   const [isErrorPassword, setIsErrorPassword] = useState<boolean>(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setIsErrorPassword(false);
     setIsErrorUsername(false);
     setErrorPassword("");
@@ -43,7 +47,17 @@ const AuthSignIn = (prop: any) => {
       setPassword("Password is not empty.");
       return;
     }
-    console.log("user name: ", username, " password: ", password);
+
+    const res = await signIn("credentials", {
+      username: username,
+      password: password,
+      redirect: false,
+    });
+    if (!res?.error) {
+      router.push("/");
+    } else {
+      alert(res.error);
+    }
   };
 
   return (
@@ -68,6 +82,10 @@ const AuthSignIn = (prop: any) => {
           }}
         >
           <div style={{ margin: "20px" }}>
+            <Link href="/">
+              <ArrowBackIcon />
+            </Link>
+
             <Box
               sx={{
                 display: "flex",
