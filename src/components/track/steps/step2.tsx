@@ -30,6 +30,14 @@ function LinearProgressWithLabel(
   );
 }
 
+function LinearWithValueLabel(props: IProps) {
+  return (
+    <Box sx={{ width: "100%" }}>
+      <LinearProgressWithLabel value={props.trackUpload.percent} />
+    </Box>
+  );
+}
+
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -55,8 +63,15 @@ function InputFileUpload() {
   );
 }
 
-const Step2 = () => {
-  const [progress, setProgress] = React.useState(10);
+interface IProps {
+  trackUpload: {
+    fileName: string;
+    percent: number;
+  };
+}
+
+const Step2 = (props: IProps) => {
+  const { trackUpload } = props;
 
   const category = [
     {
@@ -73,22 +88,11 @@ const Step2 = () => {
     },
   ];
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prevProgress) =>
-        prevProgress >= 100 ? 10 : prevProgress + 10
-      );
-    }, 800);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
   return (
     <Box>
       <Box sx={{ width: "100%" }}>
-        Your uploading track:
-        <LinearProgressWithLabel value={progress} />
+        {trackUpload.fileName}
+        <LinearWithValueLabel trackUpload={trackUpload} />
       </Box>
 
       <Grid container spacing={2} mt={5}>
