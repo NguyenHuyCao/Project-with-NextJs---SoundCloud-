@@ -5,7 +5,6 @@ import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import "./theme.css";
 import { useCallback, useState } from "react";
-import { sendRequestFile } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 
@@ -84,10 +83,10 @@ const Step1 = (props: IProps) => {
               },
             }
           );
-          props.setTrackUpload({
-            ...trackUpload,
+          props.setTrackUpload((prevState: any) => ({
+            ...prevState,
             uploadedTrackName: res.data.data.fileName,
-          });
+          }));
         } catch (error) {
           // @ts-ignore
           alert(error?.response?.data?.message);

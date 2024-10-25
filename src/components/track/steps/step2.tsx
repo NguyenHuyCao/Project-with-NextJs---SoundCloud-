@@ -13,6 +13,7 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import { sendRequest } from "@/utils/api";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -54,7 +55,7 @@ const VisuallyHiddenInput = styled("input")({
 
 function InputFileUpload(props: any) {
   const { data: session } = useSession();
-  const { setInfor, infor } = props;
+  const { infor, setInfor } = props;
 
   const handleUpload = async (image: any) => {
     const formData = new FormData();
@@ -80,6 +81,7 @@ function InputFileUpload(props: any) {
       alert(error?.response?.data?.message);
     }
   };
+  // console.log("info", infor);
 
   return (
     <Button
@@ -116,6 +118,7 @@ interface INewTrack {
 }
 
 const Step2 = (props: IProps) => {
+  const { data: session } = useSession();
   const { trackUpload } = props;
   const [infor, setInfor] = React.useState<INewTrack>({
     title: "",
@@ -149,8 +152,26 @@ const Step2 = (props: IProps) => {
     },
   ];
 
-  const handleSubmitForm = () => {
-    console.log("info", infor);
+  const handleSubmitForm = async () => {
+    const res = await sendRequest<IBackendRes<ITrackTop[]>>({
+      url: "http://localhost:8000/api/v1/tracks",
+      method: "POST",
+      body: {
+        title: infor.title,
+        description: infor.description,
+        trackUrl: infor.trackUrl,
+        imgUrl: infor.imageUrl,
+        category: infor.category,
+      },
+      headers: {
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+    });
+    if (res.data) {
+      alert("create success");
+    } else {
+      alert(res.message);
+    }
   };
 
   return (
@@ -231,9 +252,9 @@ const Step2 = (props: IProps) => {
             variant="standard"
           >
             {category.map((option) => (
-              <option key={option.value} value={option.value}>
+              <MenuItem key={option.value} value={option.value}>
                 {option.label}
-              </option>
+              </MenuItem>
             ))}
           </TextField>
           <Button
