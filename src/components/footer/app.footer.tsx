@@ -15,14 +15,17 @@ const AppFooter = () => {
   // console.log("backend", process.env.NEXT_PUBLIC_BACKEND_URL);
 
   return (
-    <div>
+    <div style={{ marginTop: 50 }}>
       <AppBar
         position="fixed"
         sx={{ top: "auto", bottom: 0, background: "#f2f2f2" }}
       >
         <Toolbar>
-          <Container sx={{ display: "flex", gap: 10 }}>
+          <Container
+            sx={{ display: "flex", gap: 10, ".rhap_main": { gap: "30px" } }}
+          >
             <AudioPlayer
+              layout="horizontal-reverse"
               src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/hoidanit.mp3`}
               volume={0.5}
               style={{ boxShadow: "unset" }}
