@@ -14,6 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { sendRequest } from "@/utils/api";
+import { useToast } from "@/utils/toast";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -54,8 +55,9 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 function InputFileUpload(props: any) {
-  const { data: session } = useSession();
   const { infor, setInfor } = props;
+  const { data: session } = useSession();
+  const toast = useToast();
 
   const handleUpload = async (image: any) => {
     const formData = new FormData();
@@ -78,7 +80,7 @@ function InputFileUpload(props: any) {
       });
     } catch (error) {
       // @ts-ignore
-      alert(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message);
     }
   };
   // console.log("info", infor);
@@ -107,6 +109,7 @@ interface IProps {
     percent: number;
     uploadedTrackName: string;
   };
+  setValue: (v: number) => void;
 }
 
 interface INewTrack {
@@ -119,7 +122,9 @@ interface INewTrack {
 
 const Step2 = (props: IProps) => {
   const { data: session } = useSession();
-  const { trackUpload } = props;
+  const { trackUpload, setValue } = props;
+  const toast = useToast();
+
   const [infor, setInfor] = React.useState<INewTrack>({
     title: "",
     description: "",
@@ -168,9 +173,10 @@ const Step2 = (props: IProps) => {
       },
     });
     if (res.data) {
-      alert("create success");
+      toast.success("create success");
+      setValue(0);
     } else {
-      alert(res.message);
+      toast.error(res.message);
     }
   };
 
@@ -178,7 +184,7 @@ const Step2 = (props: IProps) => {
     <Box>
       <Box sx={{ width: "100%" }}>
         {trackUpload.fileName}
-        <LinearWithValueLabel trackUpload={trackUpload} />
+        <LinearWithValueLabel setValue={setValue} trackUpload={trackUpload} />
       </Box>
 
       <Grid container spacing={2} mt={5}>
