@@ -46,9 +46,11 @@ function InputFileUpload() {
 interface IProps {
   setValue: (v: number) => void;
   setTrackUpload: any;
+  trackUpload: any;
 }
 
 const Step1 = (props: IProps) => {
+  const { trackUpload } = props;
   const { data: session } = useSession();
 
   const onDrop = useCallback(
@@ -75,12 +77,17 @@ const Step1 = (props: IProps) => {
                   (progressEvent.loaded * 100) / progressEvent.total!
                 );
                 props.setTrackUpload({
+                  ...trackUpload,
                   fileName: acceptedFiles[0].name,
                   percent: percentCompleted,
                 });
               },
             }
           );
+          props.setTrackUpload({
+            ...trackUpload,
+            uploadedTrackName: res.data.data.fileName,
+          });
         } catch (error) {
           // @ts-ignore
           alert(error?.response?.data?.message);
