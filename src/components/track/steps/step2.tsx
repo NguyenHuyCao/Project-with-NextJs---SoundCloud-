@@ -11,6 +11,8 @@ import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -50,9 +52,43 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-function InputFileUpload() {
+function InputFileUpload(props: any) {
+  const { data: session } = useSession();
+  const { setInfor, infor } = props;
+
+  const handleUpload = async (image: any) => {
+    const formData = new FormData();
+    formData.append("fileUpload", image);
+
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/v1/files/upload",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${session?.access_token}`,
+            target_type: "images",
+          },
+        }
+      );
+      setInfor({
+        ...infor,
+        imageUrl: res.data.data.fileName,
+      });
+    } catch (error) {
+      // @ts-ignore
+      alert(error?.response?.data?.message);
+    }
+  };
+
   return (
     <Button
+      onChange={(e) => {
+        const event = e.target as HTMLInputElement;
+        if (event.files) {
+          handleUpload(event.files[0]);
+        }
+      }}
       component="label"
       variant="contained"
       startIcon={<CloudUploadIcon />}
@@ -113,7 +149,10 @@ const Step2 = (props: IProps) => {
     },
   ];
 
-  console.log("infor: ", infor);
+  const handleSubmitForm = () => {
+    console.log("info", infor);
+  };
+
   return (
     <Box>
       <Box sx={{ width: "100%" }}>
@@ -134,11 +173,20 @@ const Step2 = (props: IProps) => {
             gap: "10px",
           }}
         >
-          <div style={{ height: 250, width: 250, background: "#ccc" }}>
-            <div></div>
+          <div
+          // style={{ height: 250, width: 250, background: "#ccc" }}
+          >
+            <div>
+              {infor.imageUrl && (
+                <img
+                  style={{ height: 250, width: 250, objectFit: "contain" }}
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${infor.imageUrl}`}
+                />
+              )}
+            </div>
           </div>
           <div>
-            <InputFileUpload />
+            <InputFileUpload infor={infor} setInfor={setInfor} />
           </div>
         </Grid>
         <Grid item xs={6} md={8}>
@@ -188,7 +236,11 @@ const Step2 = (props: IProps) => {
               </option>
             ))}
           </TextField>
-          <Button variant="outlined" sx={{ mt: 5 }}>
+          <Button
+            onClick={() => handleSubmitForm()}
+            variant="outlined"
+            sx={{ mt: 5 }}
+          >
             Save
           </Button>
         </Grid>
