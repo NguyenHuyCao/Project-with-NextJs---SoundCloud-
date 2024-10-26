@@ -6,22 +6,24 @@ import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import { useHasMounted } from "@/utils/customHook";
 import { useTrackContext } from "@/lib/track.wrapper";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const AppFooter = () => {
   const hasMounted = useHasMounted();
   const playerRef = useRef(null);
   const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
 
-  if (!hasMounted) return <></>;
+  useEffect(() => {
+    if (currentTrack?.isPlaying) {
+      // @ts-ignore
+      playerRef?.current?.audio?.current?.play();
+    } else {
+      // @ts-ignore
+      playerRef?.current?.audio?.current?.pause();
+    }
+  }, [currentTrack]);
 
-  if (currentTrack?.isPlaying) {
-    // @ts-ignore
-    playerRef?.current?.audio?.current?.play();
-  } else {
-    // @ts-ignore
-    playerRef?.current?.audio?.current?.pause();
-  }
+  if (!hasMounted) return <></>;
 
   return (
     <div style={{ marginTop: 50 }}>
