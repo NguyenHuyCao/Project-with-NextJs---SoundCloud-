@@ -50,6 +50,21 @@ declare global {
     result: T[];
   }
 
+  interface ITrackComment {
+    _id: string;
+    content: string;
+    moment: number;
+    use: {
+      _id: string;
+      email: string;
+      name: string;
+      role: string;
+      type: string;
+    };
+    track: string;
+    isDeleted: boolean;
+  }
+
   interface IShareTrack extends ITrackTop {
     isPlaying: boolean;
   }

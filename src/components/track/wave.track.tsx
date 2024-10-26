@@ -11,10 +11,11 @@ import { useTrackContext } from "@/lib/track.wrapper";
 
 interface IProps {
   track: ITrackTop | null;
+  comments: ITrackComment[] | [];
 }
 
 const WaveTrack = (props: IProps) => {
-  const { track } = props;
+  const { track, comments } = props;
   const searchParams = useSearchParams();
   const fileName = searchParams.get("audio");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -141,29 +142,29 @@ const WaveTrack = (props: IProps) => {
     return `${minutes}:${paddedSeconds}`;
   };
 
-  const arrComments = [
-    {
-      id: 1,
-      avatar: "http://localhost:8000/images/chill1.png",
-      moment: 10,
-      user: "username 1",
-      content: "just a comment1",
-    },
-    {
-      id: 2,
-      avatar: "http://localhost:8000/images/chill1.png",
-      moment: 30,
-      user: "username 2",
-      content: "just a comment3",
-    },
-    {
-      id: 3,
-      avatar: "http://localhost:8000/images/chill1.png",
-      moment: 50,
-      user: "username 3",
-      content: "just a comment3",
-    },
-  ];
+  // const arrComments = [
+  //   {
+  //     id: 1,
+  //     avatar: "http://localhost:8000/images/chill1.png",
+  //     moment: 10,
+  //     user: "username 1",
+  //     content: "just a comment1",
+  //   },
+  //   {
+  //     id: 2,
+  //     avatar: "http://localhost:8000/images/chill1.png",
+  //     moment: 30,
+  //     user: "username 2",
+  //     content: "just a comment3",
+  //   },
+  //   {
+  //     id: 3,
+  //     avatar: "http://localhost:8000/images/chill1.png",
+  //     moment: 50,
+  //     user: "username 3",
+  //     content: "just a comment3",
+  //   },
+  // ];
 
   const calLeft = (moment: number) => {
     const hardCodeDuration = 199;
@@ -264,16 +265,14 @@ const WaveTrack = (props: IProps) => {
               }}
             ></div>
             <div className="comments" style={{ position: "relative" }}>
-              {arrComments.map((item) => {
+              {comments.map((item: ITrackComment) => {
                 return (
-                  <Tooltip key={item.id} title={item.content} arrow={true}>
+                  <Tooltip key={item._id} title={item.content} arrow={true}>
                     <img
                       onPointerMove={(e) => {
                         const hover = hoverRef.current!;
                         hover.style.width = calLeft(item.moment);
                       }}
-                      key={item.id}
-                      className={"" + item.id}
                       style={{
                         height: 20,
                         width: 20,
@@ -282,8 +281,7 @@ const WaveTrack = (props: IProps) => {
                         top: 71,
                         left: calLeft(item.moment),
                       }}
-                      src="http://localhost:8000/images/chill1.png"
-                      alt=""
+                      src={"http://localhost:8000/images/chill1.png"}
                     />
                   </Tooltip>
                 );
