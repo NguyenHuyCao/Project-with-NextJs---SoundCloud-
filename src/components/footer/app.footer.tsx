@@ -6,14 +6,23 @@ import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import { useHasMounted } from "@/utils/customHook";
 import { useTrackContext } from "@/lib/track.wrapper";
+import { useRef } from "react";
 
 const AppFooter = () => {
   const hasMounted = useHasMounted();
+  const playerRef = useRef(null);
 
   if (!hasMounted) return <></>;
 
   const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
-  console.log("currentTrack", currentTrack);
+
+  if (currentTrack?.isPlaying) {
+    // @ts-ignore
+    playerRef?.current?.audio?.current?.play();
+  } else {
+    // @ts-ignore
+    playerRef?.current?.audio?.current?.pause();
+  }
 
   return (
     <div style={{ marginTop: 50 }}>
@@ -26,10 +35,23 @@ const AppFooter = () => {
             sx={{ display: "flex", gap: 10, ".rhap_main": { gap: "30px" } }}
           >
             <AudioPlayer
+              ref={playerRef}
               layout="horizontal-reverse"
-              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/hoidanit.mp3`}
+              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/${currentTrack.trackUrl}`}
               volume={0.5}
               style={{ boxShadow: "unset" }}
+              onPause={() =>
+                setCurrentTrack({
+                  ...currentTrack,
+                  isPlaying: false,
+                })
+              }
+              onPlay={() =>
+                setCurrentTrack({
+                  ...currentTrack,
+                  isPlaying: true,
+                })
+              }
             />
 
             <div

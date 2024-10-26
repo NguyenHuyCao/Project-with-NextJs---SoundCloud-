@@ -10,6 +10,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import { useTheme } from "@mui/material/styles";
 import { useTrackContext } from "@/lib/track.wrapper";
+import PauseIcon from "@mui/icons-material/Pause";
 
 interface IProps {
   data: ITrackTop;
@@ -43,17 +44,35 @@ const ProfileTracks = (props: IProps) => {
               <SkipPreviousIcon />
             )}
           </IconButton>
-          <IconButton
-            aria-label="play/pause"
-            onClick={() =>
-              setCurrentTrack({
-                ...data,
-                isPlaying: false,
-              })
-            }
-          >
-            <PlayArrowIcon sx={{ height: 38, width: 38 }} />
-          </IconButton>
+          {(data._id !== currentTrack._id ||
+            (data._id === currentTrack._id &&
+              currentTrack.isPlaying === false)) && (
+            <IconButton
+              aria-label="play/pause"
+              onClick={() =>
+                setCurrentTrack({
+                  ...data,
+                  isPlaying: true,
+                })
+              }
+            >
+              <PlayArrowIcon sx={{ height: 38, width: 38 }} />
+            </IconButton>
+          )}
+          {data._id === currentTrack._id && currentTrack.isPlaying === true && (
+            <IconButton
+              aria-label="play/pause"
+              onClick={() =>
+                setCurrentTrack({
+                  ...data,
+                  isPlaying: false,
+                })
+              }
+            >
+              <PauseIcon sx={{ height: 38, width: 38 }} />
+            </IconButton>
+          )}
+
           <IconButton aria-label="next">
             {theme.direction === "rtl" ? (
               <SkipPreviousIcon />
