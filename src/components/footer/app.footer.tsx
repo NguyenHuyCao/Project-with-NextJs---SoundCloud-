@@ -1,18 +1,19 @@
 "use client";
-
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import { Container } from "@mui/material";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import { useHasMounted } from "@/utils/customHook";
+import { useTrackContext } from "@/lib/track.wrapper";
 
 const AppFooter = () => {
   const hasMounted = useHasMounted();
 
   if (!hasMounted) return <></>;
 
-  // console.log("backend", process.env.NEXT_PUBLIC_BACKEND_URL);
+  const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
+  console.log("currentTrack", currentTrack);
 
   return (
     <div style={{ marginTop: 50 }}>
