@@ -11,10 +11,9 @@ import { useRef } from "react";
 const AppFooter = () => {
   const hasMounted = useHasMounted();
   const playerRef = useRef(null);
+  const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
 
   if (!hasMounted) return <></>;
-
-  const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
 
   if (currentTrack?.isPlaying) {
     // @ts-ignore
@@ -63,8 +62,8 @@ const AppFooter = () => {
                 minWidth: 100,
               }}
             >
-              <div style={{ color: "#ccc" }}>Huy </div>
-              <div style={{ color: "black" }}>Who am i </div>
+              <div style={{ color: "#ccc" }}>{currentTrack.description} </div>
+              <div style={{ color: "black" }}>{currentTrack.title}</div>
             </div>
           </Container>
         </Toolbar>

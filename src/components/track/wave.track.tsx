@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { useWavesurfer } from "@/utils/customHook";
@@ -7,14 +6,15 @@ import { WaveSurferOptions } from "wavesurfer.js";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import "./wave.scss";
-import { relative } from "path";
 import { Tooltip } from "@mui/material";
+import { sendRequest } from "@/utils/api";
 
 const WaveTrack = () => {
   const searchParams = useSearchParams();
   const fileName = searchParams.get("audio");
   const containerRef = useRef<HTMLDivElement>(null);
   const hoverRef = useRef<HTMLDivElement>(null);
+  const id = searchParams.get("id");
 
   const [time, setTime] = useState<string>("0:00");
   const [duration, setDuration] = useState<string>("0:00");
@@ -79,9 +79,10 @@ const WaveTrack = () => {
   }, []);
   const wavesurfer = useWavesurfer(containerRef, optionsMemo);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-
+  const [trackInfor, setTrackInfor] = useState<ITrackTop | null>(null);
   // Initialize wavesurfer when the container mounts
   // or any of the props change
+
   useEffect(() => {
     if (!wavesurfer) return;
     setIsPlaying(false);
@@ -111,6 +112,19 @@ const WaveTrack = () => {
       subscriptions.forEach((unsub) => unsub());
     };
   }, [wavesurfer]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await sendRequest<IBackendRes<ITrackTop>>({
+        url: `http://localhost:8000/api/v1/tracks/${id}`,
+        method: "GET",
+      });
+      if (res && res.data) {
+        setTrackInfor(res.data);
+      }
+    };
+    fetchData();
+  }, [id]);
 
   // On play button click
   const onPlayClick = useCallback(() => {
@@ -210,7 +224,7 @@ const WaveTrack = () => {
                   color: "white",
                 }}
               >
-                Hỏi Dân IT's song
+                {trackInfor?.title}
               </div>
               <div
                 style={{
@@ -222,7 +236,7 @@ const WaveTrack = () => {
                   color: "white",
                 }}
               >
-                Eric
+                {trackInfor?.description}
               </div>
             </div>
           </div>
@@ -244,7 +258,7 @@ const WaveTrack = () => {
             <div className="comments" style={{ position: "relative" }}>
               {arrComments.map((item) => {
                 return (
-                  <Tooltip title={item.content} arrow={true}>
+                  <Tooltip key={item.id} title={item.content} arrow={true}>
                     <img
                       onPointerMove={(e) => {
                         const hover = hoverRef.current!;
