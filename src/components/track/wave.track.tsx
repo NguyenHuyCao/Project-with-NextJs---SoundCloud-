@@ -8,6 +8,8 @@ import PauseIcon from "@mui/icons-material/Pause";
 import "./wave.scss";
 import { Tooltip } from "@mui/material";
 import { useTrackContext } from "@/lib/track.wrapper";
+import { fetchDefaultImages } from "@/utils/api";
+import CommentTrack from "./comment.track";
 
 interface IProps {
   track: ITrackTop | null;
@@ -281,7 +283,7 @@ const WaveTrack = (props: IProps) => {
                         top: 71,
                         left: calLeft(item.moment),
                       }}
-                      src={"http://localhost:8000/images/chill1.png"}
+                      src={fetchDefaultImages(item.user.type)}
                     />
                   </Tooltip>
                 );
@@ -298,14 +300,25 @@ const WaveTrack = (props: IProps) => {
             alignItems: "center",
           }}
         >
-          <div
-            style={{
-              background: "#ccc",
-              width: 250,
-              height: 250,
-            }}
-          ></div>
+          {track?.imgUrl ? (
+            <img
+              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl}`}
+              width={250}
+              height={250}
+            />
+          ) : (
+            <div
+              style={{
+                background: "#ccc",
+                width: 250,
+                height: 250,
+              }}
+            ></div>
+          )}
         </div>
+      </div>
+      <div>
+        <CommentTrack comments={comments} track={track} />
       </div>
     </div>
   );

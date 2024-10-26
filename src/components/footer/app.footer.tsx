@@ -26,51 +26,57 @@ const AppFooter = () => {
   if (!hasMounted) return <></>;
 
   return (
-    <div style={{ marginTop: 50 }}>
-      <AppBar
-        position="fixed"
-        sx={{ top: "auto", bottom: 0, background: "#f2f2f2" }}
-      >
-        <Toolbar>
-          <Container
-            sx={{ display: "flex", gap: 10, ".rhap_main": { gap: "30px" } }}
+    <>
+      {currentTrack._id && (
+        <div style={{ marginTop: 50 }}>
+          <AppBar
+            position="fixed"
+            sx={{ top: "auto", bottom: 0, background: "#f2f2f2" }}
           >
-            <AudioPlayer
-              ref={playerRef}
-              layout="horizontal-reverse"
-              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/${currentTrack.trackUrl}`}
-              volume={0.5}
-              style={{ boxShadow: "unset" }}
-              onPause={() =>
-                setCurrentTrack({
-                  ...currentTrack,
-                  isPlaying: false,
-                })
-              }
-              onPlay={() =>
-                setCurrentTrack({
-                  ...currentTrack,
-                  isPlaying: true,
-                })
-              }
-            />
+            <Toolbar>
+              <Container
+                sx={{ display: "flex", gap: 10, ".rhap_main": { gap: "30px" } }}
+              >
+                <AudioPlayer
+                  ref={playerRef}
+                  layout="horizontal-reverse"
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/tracks/${currentTrack.trackUrl}`}
+                  volume={0.5}
+                  style={{ boxShadow: "unset" }}
+                  onPause={() =>
+                    setCurrentTrack({
+                      ...currentTrack,
+                      isPlaying: false,
+                    })
+                  }
+                  onPlay={() =>
+                    setCurrentTrack({
+                      ...currentTrack,
+                      isPlaying: true,
+                    })
+                  }
+                />
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "start",
-                justifyContent: "center",
-                minWidth: 100,
-              }}
-            >
-              <div style={{ color: "#ccc" }}>{currentTrack.description} </div>
-              <div style={{ color: "black" }}>{currentTrack.title}</div>
-            </div>
-          </Container>
-        </Toolbar>
-      </AppBar>
-    </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "start",
+                    justifyContent: "center",
+                    minWidth: 100,
+                  }}
+                >
+                  <div style={{ color: "#ccc" }}>
+                    {currentTrack.description}{" "}
+                  </div>
+                  <div style={{ color: "black" }}>{currentTrack.title}</div>
+                </div>
+              </Container>
+            </Toolbar>
+          </AppBar>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -54,7 +54,7 @@ declare global {
     _id: string;
     content: string;
     moment: number;
-    use: {
+    user: {
       _id: string;
       email: string;
       name: string;
@@ -63,6 +63,7 @@ declare global {
     };
     track: string;
     isDeleted: boolean;
+    createdAt: any;
   }
 
   interface IShareTrack extends ITrackTop {
