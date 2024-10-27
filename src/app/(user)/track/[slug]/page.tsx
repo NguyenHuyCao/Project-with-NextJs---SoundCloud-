@@ -18,6 +18,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: res.data?.title,
     description: res.data?.description,
+    openGraph: {
+      title: "Hỏi Dân IT",
+      description: "Beyond Your Coding Skills",
+      type: "website",
+      images: [
+        `https://raw.githubusercontent.com/hoidanit/imageshosting/master/eric.png`,
+      ],
+    },
   };
 }
 
