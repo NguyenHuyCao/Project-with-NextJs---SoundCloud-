@@ -2,6 +2,25 @@ import WaveTrack from "@/components/track/wave.track";
 import { Container } from "@mui/material";
 import { sendRequest } from "@/utils/api";
 
+import type { Metadata } from "next";
+
+type Props = {
+  params: { slug: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // fetch data
+  const res = await sendRequest<IBackendRes<ITrackTop>>({
+    url: `http://localhost:8000/api/v1/tracks/${params.slug}`,
+    method: "GET",
+  });
+
+  return {
+    title: res.data?.title,
+    description: res.data?.description,
+  };
+}
+
 const DetailTrackPage = async (props: any) => {
   const { params } = props;
 
