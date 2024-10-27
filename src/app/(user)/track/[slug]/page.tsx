@@ -9,9 +9,11 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const temp = params.slug.split(".html")[0].split("-") ?? [];
+  const id = temp[temp.length - 1];
   // fetch data
   const res = await sendRequest<IBackendRes<ITrackTop>>({
-    url: `http://localhost:8000/api/v1/tracks/${params.slug}`,
+    url: `http://localhost:8000/api/v1/tracks/${id}`,
     method: "GET",
   });
 
@@ -31,9 +33,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 const DetailTrackPage = async (props: any) => {
   const { params } = props;
+  const temp = params.slug.split(".html")[0].split("-") ?? [];
+  const id = temp[temp.length - 1];
 
   const res = await sendRequest<IBackendRes<ITrackTop>>({
-    url: `http://localhost:8000/api/v1/tracks/${params.slug}`,
+    url: `http://localhost:8000/api/v1/tracks/${id}`,
     method: "GET",
     nextOption: { cache: "no-store" },
   });
