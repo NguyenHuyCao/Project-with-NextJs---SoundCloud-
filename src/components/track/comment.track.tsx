@@ -1,20 +1,59 @@
-import { fetchDefaultImages } from "@/utils/api";
+"use client";
+import { fetchDefaultImages, sendRequest } from "@/utils/api";
 import { Box, TextField } from "@mui/material";
 import { useState } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import WaveSurfer from "wavesurfer.js";
+dayjs.extend(relativeTime);
 interface IProps {
   comments: ITrackComment[] | [];
   track: ITrackTop | null;
+  wavesurfer: WaveSurfer | null;
 }
 
 const CommentTrack = (props: IProps) => {
-  const { track, comments } = props;
+  const router = useRouter();
+  const { data: session } = useSession();
+  const { track, comments, wavesurfer } = props;
   const [yourComment, setYourComment] = useState<string>("");
 
-  dayjs.extend(relativeTime);
-  const handleSubmit = () => {};
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const secondsRemainder = Math.round(seconds) % 60;
+    const paddedSeconds = `0${secondsRemainder}`.slice(-2);
+    return `${minutes}:${paddedSeconds}`;
+  };
+
+  const handleSubmit = async () => {
+    // const session = await getServerSession(authOptions);
+    const res = await sendRequest<IBackendRes<ITrackTop[]>>({
+      url: "http://localhost:8000/api/v1/comments",
+      method: "POST",
+      body: {
+        content: yourComment,
+        moment: Math.round(wavesurfer?.getCurrentTime() ?? 0),
+        track: track?._id,
+      },
+      headers: {
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+    });
+    if (res.data) {
+      setYourComment("");
+      router.refresh();
+    }
+  };
+
+  const handleJumpTrack = (moment: number) => {
+    if (wavesurfer) {
+      const duration = wavesurfer.getDuration();
+      wavesurfer.seekTo(moment / duration);
+      wavesurfer.play();
+    }
+  };
 
   return (
     <div>
@@ -68,7 +107,14 @@ const CommentTrack = (props: IProps) => {
                   />
                   <div>
                     <div style={{ fontSize: "13px" }}>
-                      {comment?.user?.name}
+                      {comment?.user?.name && comment?.user?.email} at
+                      <span
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleJumpTrack(comment.moment)}
+                      >
+                        &nbsp;
+                        {formatTime(comment.moment)}
+                      </span>
                     </div>
                     <div>{comment.content}</div>
                   </div>

@@ -35,6 +35,7 @@ const AppFooter = () => {
           >
             <Toolbar>
               <Container
+                disableGutters
                 sx={{ display: "flex", gap: 10, ".rhap_main": { gap: "30px" } }}
               >
                 <AudioPlayer
@@ -63,13 +64,32 @@ const AppFooter = () => {
                     flexDirection: "column",
                     alignItems: "start",
                     justifyContent: "center",
-                    minWidth: 100,
+                    width: "220px",
                   }}
                 >
-                  <div style={{ color: "#ccc" }}>
+                  <div
+                    title={currentTrack.description}
+                    style={{
+                      color: "#ccc",
+                      width: "100%",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
                     {currentTrack.description}{" "}
                   </div>
-                  <div style={{ color: "black" }}>{currentTrack.title}</div>
+                  <div
+                    style={{
+                      color: "black",
+                      width: "100%",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {currentTrack.title}
+                  </div>
                 </div>
               </Container>
             </Toolbar>
