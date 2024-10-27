@@ -10,6 +10,7 @@ import { Tooltip } from "@mui/material";
 import { useTrackContext } from "@/lib/track.wrapper";
 import { fetchDefaultImages } from "@/utils/api";
 import CommentTrack from "./comment.track";
+import LikeTrack from "./like.track";
 
 interface IProps {
   track: ITrackTop | null;
@@ -317,6 +318,10 @@ const WaveTrack = (props: IProps) => {
           )}
         </div>
       </div>
+      <div>
+        <LikeTrack track={track} />
+      </div>
+
       <div>
         <CommentTrack
           wavesurfer={wavesurfer}
