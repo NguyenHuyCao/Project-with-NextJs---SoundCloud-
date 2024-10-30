@@ -1,6 +1,7 @@
 import WaveTrack from "@/components/track/wave.track";
 import { Container } from "@mui/material";
 import { sendRequest } from "@/utils/api";
+import { notFound } from "next/navigation";
 
 import type { Metadata } from "next";
 
@@ -52,6 +53,9 @@ const DetailTrackPage = async (props: any) => {
       sort: "-createdAt",
     },
   });
+
+  if (!res?.data) notFound();
+
   return (
     <Container>
       <div>
