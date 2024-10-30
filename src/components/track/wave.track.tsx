@@ -138,7 +138,7 @@ const WaveTrack = (props: IProps) => {
   const handleIncreaseView = async () => {
     if (firstViewRef.current) {
       await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
-        url: "http://localhost:8000/api/v1/tracks/increase-view",
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/increase-view`,
         method: "POST",
         body: {
           trackId: track?._id,
@@ -162,30 +162,6 @@ const WaveTrack = (props: IProps) => {
     const paddedSeconds = `0${secondsRemainder}`.slice(-2);
     return `${minutes}:${paddedSeconds}`;
   };
-
-  // const arrComments = [
-  //   {
-  //     id: 1,
-  //     avatar: "http://localhost:8000/images/chill1.png",
-  //     moment: 10,
-  //     user: "username 1",
-  //     content: "just a comment1",
-  //   },
-  //   {
-  //     id: 2,
-  //     avatar: "http://localhost:8000/images/chill1.png",
-  //     moment: 30,
-  //     user: "username 2",
-  //     content: "just a comment3",
-  //   },
-  //   {
-  //     id: 3,
-  //     avatar: "http://localhost:8000/images/chill1.png",
-  //     moment: 50,
-  //     user: "username 3",
-  //     content: "just a comment3",
-  //   },
-  // ];
 
   const calLeft = (moment: number) => {
     const hardCodeDuration = wavesurfer?.getDuration() ?? 0;
