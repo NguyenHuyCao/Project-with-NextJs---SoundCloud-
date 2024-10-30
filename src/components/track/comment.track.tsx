@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import WaveSurfer from "wavesurfer.js";
 import { useHasMounted } from "@/utils/customHook";
+import Image from "next/image";
 dayjs.extend(relativeTime);
 interface IProps {
   comments: ITrackComment[] | [];
@@ -76,12 +77,11 @@ const CommentTrack = (props: IProps) => {
       </div>
       <div style={{ display: "flex" }}>
         <div className="left" style={{ width: 200 }}>
-          <img
-            style={{
-              height: 150,
-              width: 150,
-            }}
+          <Image
+            height={150}
+            width={150}
             src={fetchDefaultImages(track?.uploader?.type!)}
+            alt="avatar comment"
           />
           <div>{track?.uploader?.email}</div>
         </div>
@@ -103,8 +103,10 @@ const CommentTrack = (props: IProps) => {
                     gap: "10px",
                   }}
                 >
-                  <img
-                    style={{ width: 40, height: 40 }}
+                  <Image
+                    width={40}
+                    height={40}
+                    alt="comment"
                     src={fetchDefaultImages(comment.user.type)}
                   />
                   <div>

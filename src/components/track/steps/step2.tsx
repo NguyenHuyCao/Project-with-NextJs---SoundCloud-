@@ -15,6 +15,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { sendRequest } from "@/utils/api";
 import { useToast } from "@/utils/toast";
+import Image from "next/image";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -205,8 +206,11 @@ const Step2 = (props: IProps) => {
           >
             <div>
               {infor.imageUrl && (
-                <img
-                  style={{ height: 250, width: 250, objectFit: "contain" }}
+                <Image
+                  style={{ objectFit: "contain" }}
+                  height={250}
+                  width={250}
+                  alt="step 2 track url"
                   src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${infor.imageUrl}`}
                 />
               )}
