@@ -48,7 +48,10 @@ const DetailTrackPage = async (props: any) => {
   const res = await sendRequest<IBackendRes<ITrackTop>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
     method: "GET",
-    // nextOption: { cache: "no-store" },
+    nextOption: {
+      // cache: "no-store"
+      next: { tags: ["track-by-id"] },
+    },
   });
 
   const res1 = await sendRequest<IBackendRes<IModelPaginate<ITrackComment>>>({
