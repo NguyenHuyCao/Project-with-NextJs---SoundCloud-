@@ -32,6 +32,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export async function generateStaticParams() {
+  return [
+    { slug: "tinh-co-yeu-em-66c9a5731d4a0620af469777.html" },
+    { slug: "rolling-down-66c9a5731d4a0620af469772.html" },
+    { slug: "le-luu-ly-66c9a5731d4a0620af469774.html" },
+  ];
+}
+
 const DetailTrackPage = async (props: any) => {
   const { params } = props;
   const temp = params.slug.split(".html")[0].split("-") ?? [];
@@ -40,7 +48,7 @@ const DetailTrackPage = async (props: any) => {
   const res = await sendRequest<IBackendRes<ITrackTop>>({
     url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/${id}`,
     method: "GET",
-    nextOption: { cache: "no-store" },
+    // nextOption: { cache: "no-store" },
   });
 
   const res1 = await sendRequest<IBackendRes<IModelPaginate<ITrackComment>>>({
