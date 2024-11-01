@@ -3,9 +3,8 @@ import { convertSlugUrl, sendRequest } from "@/utils/api";
 import { Box, Container, Divider } from "@mui/material";
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
-import Link from "next/link";
 import Image from "next/image";
-import { describe } from "node:test";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Huy Like Page",
@@ -42,12 +41,12 @@ const LikePage = async () => {
                 <div
                   style={{
                     position: "relative",
-                    height: "165px",
-                    width: "165px",
+                    height: "175px",
+                    width: "175px",
                   }}
                 >
                   <Image
-                    alt="Huy image"
+                    alt={track.description}
                     src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`}
                     fill
                     style={{ objectFit: "contain" }}
