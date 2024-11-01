@@ -50,6 +50,18 @@ declare global {
     result: T[];
   }
 
+  interface IPlaylist {
+    _id: string;
+    title: string;
+    isPublic: true;
+    user: string;
+    tracks: ITrackTop[];
+    isDeleted: boolean;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  }
+
   interface ITrackComment {
     _id: string;
     content: string;
